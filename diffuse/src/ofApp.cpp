@@ -11,7 +11,7 @@ void ofApp::setup() {
 	box.setPosition(400, 0, 0);
 
 	light.setPointLight();
-	light.setPosition(170, 0, 170);
+	light.setPosition(160, 0, 160);
 	light.setDiffuseColor(ofFloatColor(.8f, .4, .2));
 	light.setAttenuation(1);
 
@@ -21,7 +21,7 @@ void ofApp::setup() {
 		ofEnableLighting();
 		ofSetSmoothLighting(true);
 	} else {
-		shader.load("diffuse");
+		shader.load("diffuseSlow");
 	}
 
 	renderFlat = false;
@@ -82,9 +82,9 @@ void ofApp::draw() {
 		light.disable();
 	}
 
-	ofSetColor(255);
-	sphere.drawNormals(10);
-	box.drawNormals(10);
+	//ofSetColor(255);
+	//sphere.drawNormals(10);
+	//box.drawNormals(10);
 
 	light.draw();
 
