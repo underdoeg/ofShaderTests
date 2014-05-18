@@ -21,6 +21,7 @@ class ofApp : public ofBaseApp{
 
 		ofLight light;
 		ofIcoSpherePrimitive sphere;
+		//ofSpherePrimitive sphere;
 		ofBoxPrimitive box;
 		ofShader shader;
 		ofEasyCam cam;

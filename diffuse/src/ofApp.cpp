@@ -1,25 +1,26 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup() {
+	ofSetVerticalSync(true);
+
 	ofBackground(0);
 
 	sphere.setScale(10);
 
 	box.setPosition(400, 0, 0);
-	box.tilt(30);
 
 	light.setPointLight();
-	light.setPosition(500, 400, 400);
+	light.setPosition(170, 0, 170);
 	light.setDiffuseColor(ofFloatColor(.8f, .4, .2));
 	light.setAttenuation(1);
 
 	material.setShininess(0);
 
-	if(!ofIsGLProgrammableRenderer()){
+	if(!ofIsGLProgrammableRenderer()) {
 		ofEnableLighting();
 		ofSetSmoothLighting(true);
-	}else{
+	} else {
 		shader.load("diffuse");
 	}
 
@@ -27,23 +28,28 @@ void ofApp::setup(){
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
-
+void ofApp::update() {
+	light.rotateAround(.5, ofVec3f(0, 1, 0), ofVec3f(0, 0, 0));
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw() {
+
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 
 	ofEnableDepthTest();
 
 	cam.begin();
 
-	if(ofIsGLProgrammableRenderer()){
+	if(ofIsGLProgrammableRenderer() && shader.isLoaded()) {
 		shader.begin();
-		shader.setUniform3f("lightPos", light.getPosition().x, light.getPosition().y, light.getPosition().z);
+		ofVec3f lightPos = light.getPosition() * cam.getModelViewMatrix();
+		shader.setUniform3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
 		shader.setUniform3f("lightColor", light.getDiffuseColor().r, light.getDiffuseColor().g, light.getDiffuseColor().b);
 		shader.setUniform1i("doFlat", (int)renderFlat);
-	}else{
+	} else {
 		if(renderFlat)
 			glShadeModel(GL_FLAT);
 		else
@@ -52,15 +58,35 @@ void ofApp::draw(){
 		material.begin();
 	}
 
+	if(ofIsGLProgrammableRenderer() && shader.isLoaded()) {
+		//get normal matrix
+		/*
+		ofMatrix4x4 normMat4 = sphere.getLocalTransformMatrix();
+		ofMatrix3x3 normMat(normMat4._mat[0][0], normMat4._mat[0][1], normMat4._mat[0][2],
+		                    normMat4._mat[1][0], normMat4._mat[1][1], normMat4._mat[1][2],
+		                    normMat4._mat[2][0], normMat4._mat[2][1], normMat4._mat[2][2]);
+
+		normMat.invert();
+		normMat.transpose();
+		shader.setUniformMatrix3f("normalMatrix", normMat);
+		*/
+	}
+
 	sphere.draw();
 	box.draw();
 
-	if(ofIsGLProgrammableRenderer()){
+	if(ofIsGLProgrammableRenderer() && shader.isLoaded()) {
 		shader.end();
-	}else{
+	} else {
 		material.end();
 		light.disable();
 	}
+
+	ofSetColor(255);
+	sphere.drawNormals(10);
+	box.drawNormals(10);
+
+	light.draw();
 
 	cam.end();
 
@@ -68,46 +94,46 @@ void ofApp::draw(){
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
+void ofApp::keyPressed(int key) {
 	renderFlat = !renderFlat;
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(int key) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::mouseMoved(int x, int y ) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
+void ofApp::mouseDragged(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseReleased(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
+void ofApp::windowResized(int w, int h) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
+void ofApp::gotMessage(ofMessage msg) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){
+void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 }
